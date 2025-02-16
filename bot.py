@@ -1,13 +1,12 @@
 import telebot
 from bot_logic import gen_pass, gen_emodji, timers, flip_coin, jokes  # Импортируем функции из bot_logic
 
-
 # Замени 'TOKEN' на токен твоего бота
-bot = telebot.TeleBot("token")
+bot = telebot.TeleBot("8117182316:AAE_fsZPRHgJMGva7Nd1BYDDdXxk6fuaRHY")
 
 @bot.message_handler(commands=['start', 'hello'])
 def send_welcome(message):
-    bot.reply_to(message, "Привет! Я твой Telegram бот. Какую команду вы выберете? /hello, /bye, /pass, /emodji, /jokes, /coin, /timers")
+    bot.reply_to(message, "Привет! Я твой Telegram бот. Какую команду вы выберете? /hello, /bye, /pass, /emodji, /jokes, /coin, /timers, /heh, /dog, /ping, /poll")
 
 @bot.message_handler(commands=['bye'])
 def send_bye(message):
@@ -66,6 +65,18 @@ def create_poll(message):
 def handle_poll(poll):
     # This handler can be used to log User answers and to send next poll
     pass
+
+# Обработчик команды /picture
+@bot.message_handler(commands=['dog'])
+def dog_command(message):
+    image_path = 'Desktop/lavar/lava.jpg'
+    try:
+        with open(image_path, 'rb') as photo:
+            bot.send_photo(message.chat.id, photo)
+    except FileNotFoundError:
+        bot.send_message(message.chat.id, "К сожалению, картинка не найдена.")
+    except Exception as e:
+        bot.send_message(message.chat.id, f"Произошла ошибка при отправке картинки: {e}")
 
 @bot.message_handler(func=lambda message: True)
 def echo_message(message):
