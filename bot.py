@@ -1,8 +1,10 @@
 import telebot
-from bot_logic import gen_pass, gen_emodji, timers, flip_coin, jokes  # Импортируем функции из bot_logic
-
+import os
+import random
+import requests
+from bot_logic import gen_pass, gen_emodji, get_duck_image_url, timers, flip_coin, jokes, get_dog_image_url # Импортируем функции из bot_logic
 # Замени 'TOKEN' на токен твоего бота
-bot = telebot.TeleBot("token")
+bot = telebot.TeleBot("no")
 
 @bot.message_handler(commands=['start', 'hello'])
 def send_welcome(message):
@@ -68,15 +70,27 @@ def handle_poll(poll):
 
 # Обработчик команды /picture
 @bot.message_handler(commands=['dog'])
-def dog_command(message):
-    image_path = 'Desktop/lavar/lava.jpg'
-    try:
-        with open(image_path, 'rb') as photo:
-            bot.send_photo(message.chat.id, photo)
-    except FileNotFoundError:
-        bot.send_message(message.chat.id, "К сожалению, картинка не найдена.")
-    except Exception as e:
-        bot.send_message(message.chat.id, f"Произошла ошибка при отправке картинки: {e}")
+def send_dog(message):
+    with open('lavar/lava.jpg', 'rb') as f:  
+        bot.send_photo(message.chat.id, f) 
+
+
+@bot.message_handler(commands=['mem'])
+def send_mem(message):
+    file_list = os.listdir("images")
+    img_name = random.choice(file_list)
+    with open(f'images/{img_name}', 'rb') as f:  
+        bot.send_photo(message.chat.id, f)  
+
+@bot.message_handler(commands=['duck'])
+def duck(message):
+    image_url = get_duck_image_url()
+    bot.reply_to(message, image_url)
+
+@bot.message_handler(commands=['dogs'])
+def dogs(message):
+    image_url = get_dog_image_url()
+    bot.reply_to(message, image_url)     
 
 @bot.message_handler(func=lambda message: True)
 def echo_message(message):
